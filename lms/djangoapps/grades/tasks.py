@@ -14,8 +14,10 @@ from openedx.core.djangoapps.content.block_structure.api import get_course_in_ca
 from xmodule.modulestore.django import modulestore
 
 from .config.models import PersistentGradesEnabledFlag
-from .transformer import GradesTransformer
+from .new.course_grade import CourseGradeFactory
 from .new.subsection_grade import SubsectionGradeFactory
+from .signals.signals import COURSE_GRADE_UPDATE_REQUESTED
+from .transformer import GradesTransformer
 
 
 @task(default_retry_delay=30, routing_key=settings.RECALCULATE_GRADES_ROUTING_KEY)
@@ -59,5 +61,28 @@ def recalculate_subsection_grade(user_id, course_id, usage_id, only_if_higher):
                 transformed_subsection_structure,
                 only_if_higher,
             )
+        COURSE_GRADE_UPDATE_REQUESTED.send(
+            sender=recalculate_subsection_grade,
+            user_id=user_id,
+            course_id=course_id,
+        )
     except IntegrityError as exc:
         raise recalculate_subsection_grade.retry(args=[user_id, course_id, usage_id], exc=exc)
+
+
+@task(default_retry_delay=30, routing_key=settings.RECALCULATE_GRADES_ROUTING_KEY)
+def recalculate_course_grade(user_id, course_id):
+    """
+    Updates a saved course grade.
+    This method expects the following parameters:
+       - user_id: serialized id of applicable User object
+       - course_id: Unicode string representing the course
+    """
+    student = User.objects.get(id=user_id)
+    course_key = CourseLocator.from_string(course_id)
+    course = get_course_by_id(course_key, depth=0)
+
+    try:
+        CourseGradeFactory(student).update(course)
+    except IntegrityError as exc:
+        raise recalculate_course_grade.retry(args=[user_id, course_id], exc=exc)

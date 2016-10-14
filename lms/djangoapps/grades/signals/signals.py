@@ -33,3 +33,11 @@ SCORE_PUBLISHED = Signal(
                             # made only if the new score is higher than previous.
     ]
 )
+
+# Signal that indicates a course grade needs to be updated
+COURSE_GRADE_UPDATE_REQUESTED = Signal(
+    providing_args=[
+        'user_id',  # Integer User ID
+        'course_id',  # Unicode string representing the course
+    ]
+)
