@@ -49,7 +49,7 @@
                 /> ${HTML(choice_label)}
 
                 % if is_radio_input(choice_id):
-                  % if status in ('correct', 'partially-correct', 'incorrect') and not show_correctness == 'never':
+                  % if not show_correctness == 'never' and status.classname != 'unanswered':
                     <%include file="status_span.html" args="status=status, status_id=id"/>
                   % endif
                 % endif
@@ -59,8 +59,8 @@
         <span id="answer_${id}"></span>
     </fieldset>
     <div class="indicator-container">
-        % if input_type == 'checkbox' or not value:
-          % if (not show_correctness == 'never') or status.classname == 'unanswered':
+        % if input_type == 'checkbox' or status.classname == 'unanswered':
+          % if show_correctness != 'never':
             <%include file="status_span.html" args="status=status, status_id=id"/>
           % else:
             <%include file="status_span.html" args="status=status, status_id=id, hide_correctness=True"/>

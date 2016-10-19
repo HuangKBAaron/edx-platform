@@ -51,9 +51,7 @@
         <input type="hidden" class="value" name="input_${id}" id="input_${id}" value="${value|h}" />
     % endif
 
-    <%include file="status_span.html" args="status=status,
-        classname=status.classname,
-        status_id=id"/>
+    <%include file="status_span.html" args="status=status, status_id=id"/>
 
     <p id="answer_${id}" class="answer answer-annotation"></p>
 </div>
