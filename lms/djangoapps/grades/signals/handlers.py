@@ -11,7 +11,6 @@ from student.models import user_by_anonymous_id
 from submissions.models import score_set, score_reset
 
 from .signals import SCORE_CHANGED, SCORE_PUBLISHED
-from ..tasks import recalculate_subsection_grade
 
 
 log = getLogger(__name__)
@@ -123,6 +122,7 @@ def enqueue_grade_update(sender, **kwargs):  # pylint: disable=unused-argument
     """
     Handles the SCORE_CHANGED signal by enqueueing an update operation to occur asynchronously.
     """
+    from ..tasks import recalculate_subsection_grade
     recalculate_subsection_grade.apply_async(
         args=(
             kwargs['user_id'],
