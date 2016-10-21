@@ -58,6 +58,7 @@ import xqueue_interface
 from xqueue_interface import XQUEUE_TIMEOUT
 from datetime import datetime
 from xmodule.stringify import stringify_children
+from openedx.core.djangolib.markup import HTML, Text
 
 log = logging.getLogger(__name__)
 
@@ -232,7 +233,7 @@ class InputTypeBase(object):
 
         # put hint above msg if it should be displayed
         if self.hintmode == 'always':
-            self.msg = self.hint + ('<br/>' if self.msg else '') + self.msg
+            self.msg = HTML('{hint}<br/>{msg}' if self.msg else '').format(hint=self.hint, msg=self.msg)
 
         self.status = state.get('status', 'unanswered')
 
@@ -525,9 +526,10 @@ class ChoiceGroup(InputTypeBase):
                 choices.append((choice.get("name"), stringify_children(choice)))
             else:
                 if choice.tag != 'compoundhint':
-                    msg = u'[capa.inputtypes.extract_choices] {error_message}'.format(
+                    msg = Text('[capa.inputtypes.extract_choices] {error_message}').format(
                         # Translators: '<choice>' and '<compoundhint>' are tag names and should not be translated.
-                        error_message=_('Expected a <choice> or <compoundhint> tag; got {given_tag} instead').format(
+                        error_message=Text(
+                            _('Expected a <choice> or <compoundhint> tag; got {given_tag} instead')).format(
                             given_tag=choice.tag
                         )
                     )
@@ -942,13 +944,13 @@ class MatlabInput(CodeInput):
         queue_msg = self.queue_msg
         if len(self.queue_msg) > 0:  # An empty string cannot be parsed as XML but is okay to include in the template.
             try:
-                etree.XML(u'<div>{0}</div>'.format(self.queue_msg))
+                etree.XML(HTML(u'<div>{0}</div>').format(self.queue_msg))
             except etree.XMLSyntaxError:
                 try:
                     html5lib.parseFragment(self.queue_msg, treebuilder='lxml', namespaceHTMLElements=False)[0]
                 except (IndexError, ValueError):
                     # If neither can parse queue_msg, it contains invalid xml.
-                    queue_msg = u"<span>{0}</span>".format(_("Error running code."))
+                    queue_msg = HTML("<span>{0}</span>").format(_("Error running code."))
 
         extra_context = {
             'queue_len': str(self.queue_len),
@@ -1800,10 +1802,10 @@ class ChoiceTextGroup(InputTypeBase):
 
         for choice in element:
             if choice.tag != 'choice':
-                msg = u"[capa.inputtypes.extract_choices] {0}".format(
+                msg = Text("[capa.inputtypes.extract_choices] {0}").format(
                     # Translators: a "tag" is an XML element, such as "<b>" in HTML
-                    _("Expected a {expected_tag} tag; got {given_tag} instead").format(
-                        expected_tag=u"<choice>",
+                    Text(_("Expected a {expected_tag} tag; got {given_tag} instead")).format(
+                        expected_tag=Text("<choice>"),
                         given_tag=choice.tag,
                     )
                 )
