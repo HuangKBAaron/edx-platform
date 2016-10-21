@@ -303,33 +303,6 @@ class ChoiceGroupTemplateTest(TemplateTestCase):
                                  "//label[@class='choicegroup_correct']",
                                  self.context)
 
-    def test_radio_problem_marked_incorrect(self):
-        """
-        Test all conditions under which the entire problem
-        (not a particular option) is marked incorrect.
-        """
-        conditions = [
-            {'status': Status('incorrect'), 'input_type': 'radio', 'value': ''},
-            {'status': Status('incomplete'), 'input_type': 'radio', 'value': ''}
-        ]
-
-        for test_conditions in conditions:
-            self.context.update(test_conditions)
-            xml = self.render_to_xml(self.context)
-            xpath = "//div[@class='indicator-container']/span[@class='status incorrect']"
-
-            # The status should now be on the choice after a submission
-            self.assert_no_xpath(xml, xpath, self.context)
-
-            # Should NOT mark individual options
-            self.assert_no_xpath(xml,
-                                 "//label[@class='choicegroup_incorrect']",
-                                 self.context)
-
-            self.assert_no_xpath(xml,
-                                 "//label[@class='choicegroup_correct']",
-                                 self.context)
-
     def test_problem_marked_unsubmitted(self):
         """
         Test all conditions under which the entire problem
