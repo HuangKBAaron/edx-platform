@@ -16,21 +16,21 @@ TODO:
 - test funny xml chars -- should never get xml parse error if things are escaped properly.
 
 """
-from collections import OrderedDict
 import json
-from lxml import etree
-from lxml.html import fromstring
-import unittest
 import textwrap
+import unittest
 import xml.sax.saxutils as saxutils
+from collections import OrderedDict
 
-from capa.tests.helpers import test_capa_system
 from capa import inputtypes
 from capa.checker import DemoSystem
-from mock import ANY, patch
-from pyparsing import ParseException
-
+from capa.tests.helpers import test_capa_system
 from capa.xqueue_interface import XQUEUE_TIMEOUT
+from lxml import etree
+from lxml.html import fromstring
+from mock import ANY, patch
+from openedx.core.djangolib.markup import HTML
+from pyparsing import ParseException
 
 # just a handy shortcut
 lookup_tag = inputtypes.registry.get_class_for_tag
@@ -78,7 +78,7 @@ class OptionInputTest(unittest.TestCase):
             'id': prob_id,
             'default_option_text': 'Select an option',
             'response_data': RESPONSE_DATA,
-            'describedby_html': DESCRIBEDBY.format(status_id='sky_input')
+            'describedby_html': HTML(DESCRIBEDBY).format(status_id='sky_input')
         }
 
         self.assertEqual(context, expected)
@@ -147,7 +147,7 @@ class ChoiceGroupTest(unittest.TestCase):
             'submitted_message': 'Answer received.',
             'name_array_suffix': expected_suffix,   # what is this for??
             'response_data': RESPONSE_DATA,
-            'describedby_html': DESCRIBEDBY.format(status_id='sky_input')
+            'describedby_html': HTML(DESCRIBEDBY).format(status_id='sky_input')
         }
 
         self.assertEqual(context, expected)
@@ -201,7 +201,7 @@ class JavascriptInputTest(unittest.TestCase):
             'display_class': display_class,
             'problem_state': problem_state,
             'response_data': RESPONSE_DATA,
-            'describedby_html': DESCRIBEDBY.format(status_id=prob_id)
+            'describedby_html': HTML(DESCRIBEDBY).format(status_id=prob_id)
         }
 
         self.assertEqual(context, expected)
@@ -239,7 +239,7 @@ class TextLineTest(unittest.TestCase):
             'trailing_text': '',
             'preprocessor': None,
             'response_data': RESPONSE_DATA,
-            'describedby_html': DESCRIBEDBY.format(status_id=prob_id)
+            'describedby_html': HTML(DESCRIBEDBY).format(status_id=prob_id)
         }
         self.assertEqual(context, expected)
 
@@ -278,7 +278,7 @@ class TextLineTest(unittest.TestCase):
                 'script_src': script,
             },
             'response_data': RESPONSE_DATA,
-            'describedby_html': DESCRIBEDBY.format(status_id=prob_id)
+            'describedby_html': HTML(DESCRIBEDBY).format(status_id=prob_id)
         }
         self.assertEqual(context, expected)
 
@@ -323,7 +323,7 @@ class TextLineTest(unittest.TestCase):
                 'trailing_text': expected_text,
                 'preprocessor': None,
                 'response_data': RESPONSE_DATA,
-                'describedby_html': DESCRIBEDBY.format(status_id=prob_id)
+                'describedby_html': HTML(DESCRIBEDBY).format(status_id=prob_id)
             }
             self.assertEqual(context, expected)
 
@@ -366,7 +366,7 @@ class FileSubmissionTest(unittest.TestCase):
             'allowed_files': '["runme.py", "nooooo.rb", "ohai.java"]',
             'required_files': '["cookies.py"]',
             'response_data': RESPONSE_DATA,
-            'describedby_html': DESCRIBEDBY.format(status_id=prob_id)
+            'describedby_html': HTML(DESCRIBEDBY).format(status_id=prob_id)
         }
 
         self.assertEqual(context, expected)
@@ -424,7 +424,7 @@ class CodeInputTest(unittest.TestCase):
             'aria_label': '{mode} editor'.format(mode=mode),
             'code_mirror_exit_message': 'Press ESC then TAB or click outside of the code editor to exit',
             'response_data': RESPONSE_DATA,
-            'describedby_html': DESCRIBEDBY.format(status_id=prob_id)
+            'describedby_html': HTML(DESCRIBEDBY).format(status_id=prob_id)
         }
 
         self.assertEqual(context, expected)
@@ -486,7 +486,7 @@ class MatlabTest(unittest.TestCase):
             'queue_len': '3',
             'matlab_editor_js': '/dummy-static/js/vendor/CodeMirror/octave.js',
             'response_data': {},
-            'describedby_html': 'aria-describedby="status_prob_1_2"'
+            'describedby_html': HTML('aria-describedby="status_prob_1_2"')
         }
 
         self.assertEqual(context, expected)
@@ -521,7 +521,7 @@ class MatlabTest(unittest.TestCase):
             'queue_len': '3',
             'matlab_editor_js': '/dummy-static/js/vendor/CodeMirror/octave.js',
             'response_data': RESPONSE_DATA,
-            'describedby_html': DESCRIBEDBY.format(status_id=prob_id)
+            'describedby_html': HTML(DESCRIBEDBY).format(status_id=prob_id)
         }
 
         self.assertEqual(context, expected)
@@ -555,7 +555,7 @@ class MatlabTest(unittest.TestCase):
                 'queue_len': '0',
                 'matlab_editor_js': '/dummy-static/js/vendor/CodeMirror/octave.js',
                 'response_data': RESPONSE_DATA,
-                'describedby_html': DESCRIBEDBY.format(status_id=prob_id)
+                'describedby_html': HTML(DESCRIBEDBY).format(status_id=prob_id)
             }
 
             self.assertEqual(context, expected)
@@ -589,7 +589,7 @@ class MatlabTest(unittest.TestCase):
             'queue_len': '1',
             'matlab_editor_js': '/dummy-static/js/vendor/CodeMirror/octave.js',
             'response_data': RESPONSE_DATA,
-            'describedby_html': DESCRIBEDBY.format(status_id=prob_id)
+            'describedby_html': HTML(DESCRIBEDBY).format(status_id=prob_id)
         }
 
         self.assertEqual(context, expected)
@@ -933,7 +933,7 @@ class SchematicTest(unittest.TestCase):
             'analyses': analyses,
             'submit_analyses': submit_analyses,
             'response_data': RESPONSE_DATA,
-            'describedby_html': DESCRIBEDBY.format(status_id=prob_id)
+            'describedby_html': HTML(DESCRIBEDBY).format(status_id=prob_id)
         }
 
         self.assertEqual(context, expected)
@@ -979,7 +979,7 @@ class ImageInputTest(unittest.TestCase):
             'gy': egy,
             'msg': '',
             'response_data': RESPONSE_DATA,
-            'describedby_html': DESCRIBEDBY.format(status_id=prob_id)
+            'describedby_html': HTML(DESCRIBEDBY).format(status_id=prob_id)
         }
 
         self.assertEqual(context, expected)
@@ -1035,7 +1035,7 @@ class CrystallographyTest(unittest.TestCase):
             'width': width,
             'height': height,
             'response_data': RESPONSE_DATA,
-            'describedby_html': DESCRIBEDBY.format(status_id=prob_id)
+            'describedby_html': HTML(DESCRIBEDBY).format(status_id=prob_id)
         }
 
         self.assertEqual(context, expected)
@@ -1083,7 +1083,7 @@ class VseprTest(unittest.TestCase):
             'molecules': molecules,
             'geometries': geometries,
             'response_data': RESPONSE_DATA,
-            'describedby_html': DESCRIBEDBY.format(status_id=prob_id)
+            'describedby_html': HTML(DESCRIBEDBY).format(status_id=prob_id)
         }
 
         self.assertEqual(context, expected)
@@ -1119,7 +1119,7 @@ class ChemicalEquationTest(unittest.TestCase):
             'size': self.size,
             'previewer': '/dummy-static/js/capa/chemical_equation_preview.js',
             'response_data': RESPONSE_DATA,
-            'describedby_html': DESCRIBEDBY.format(status_id=prob_id)
+            'describedby_html': HTML(DESCRIBEDBY).format(status_id=prob_id)
         }
         self.assertEqual(context, expected)
 
@@ -1214,7 +1214,7 @@ class FormulaEquationTest(unittest.TestCase):
             'inline': False,
             'trailing_text': '',
             'response_data': RESPONSE_DATA,
-            'describedby_html': DESCRIBEDBY.format(status_id=prob_id)
+            'describedby_html': HTML(DESCRIBEDBY).format(status_id=prob_id)
         }
         self.assertEqual(context, expected)
 
@@ -1260,7 +1260,7 @@ class FormulaEquationTest(unittest.TestCase):
                 'inline': False,
                 'trailing_text': expected_text,
                 'response_data': RESPONSE_DATA,
-                'describedby_html': DESCRIBEDBY.format(status_id=prob_id)
+                'describedby_html': HTML(DESCRIBEDBY).format(status_id=prob_id)
             }
 
             self.assertEqual(context, expected)
@@ -1392,7 +1392,7 @@ class DragAndDropTest(unittest.TestCase):
             'msg': '',
             'drag_and_drop_json': json.dumps(user_input),
             'response_data': RESPONSE_DATA,
-            'describedby_html': DESCRIBEDBY.format(status_id=prob_id)
+            'describedby_html': HTML(DESCRIBEDBY).format(status_id=prob_id)
         }
 
         # as we are dumping 'draggables' dicts while dumping user_input, string
@@ -1461,7 +1461,7 @@ class AnnotationInputTest(unittest.TestCase):
             'debug': False,
             'return_to_annotation': True,
             'response_data': RESPONSE_DATA,
-            'describedby_html': DESCRIBEDBY.format(status_id=prob_id)
+            'describedby_html': HTML(DESCRIBEDBY).format(status_id=prob_id)
         }
 
         self.maxDiff = None
@@ -1526,7 +1526,7 @@ class TestChoiceText(unittest.TestCase):
             'show_correctness': 'always',
             'submitted_message': 'Answer received.',
             'response_data': RESPONSE_DATA,
-            'describedby_html': DESCRIBEDBY.format(status_id=prob_id)
+            'describedby_html': HTML(DESCRIBEDBY).format(status_id=prob_id)
         }
         expected.update(state)
         the_input = lookup_tag(tag)(test_capa_system(), element, state)

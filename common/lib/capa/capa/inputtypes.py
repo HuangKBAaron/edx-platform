@@ -39,26 +39,27 @@ graded status as'status'
 # makes sense, but a bunch of problems have markup that assumes block.  Bigger TODO: figure out a
 # general css and layout strategy for capa, document it, then implement it.
 
-import time
 import json
 import logging
-from lxml import etree
-import re
 import shlex  # for splitting quoted strings
 import sys
-import pyparsing
-import html5lib
-import bleach
-
-from .util import sanitize_html
-from .registry import TagRegistry
-from chem import chemcalc
-from calc.preview import latex_preview
-import xqueue_interface
-from xqueue_interface import XQUEUE_TIMEOUT
+import time
 from datetime import datetime
-from xmodule.stringify import stringify_children
+
+import bleach
+import html5lib
+import pyparsing
+import re
+from calc.preview import latex_preview
+from chem import chemcalc
+from lxml import etree
 from openedx.core.djangolib.markup import HTML, Text
+
+import xqueue_interface
+from xmodule.stringify import stringify_children
+from xqueue_interface import XQUEUE_TIMEOUT
+from .registry import TagRegistry
+from .util import sanitize_html
 
 log = logging.getLogger(__name__)
 
@@ -323,7 +324,7 @@ class InputTypeBase(object):
             'msg': self.msg,
             'response_data': self.response_data,
             'STATIC_URL': self.capa_system.STATIC_URL,
-            'describedby_html': '',
+            'describedby_html': HTML(''),
         }
 
         # Generate the list of ids to be used with the aria-describedby field.
@@ -333,7 +334,7 @@ class InputTypeBase(object):
         descriptions.extend(self.response_data.get('descriptions', {}).keys())
         description_ids = ' '.join(descriptions)
         context.update(
-            {'describedby_html': 'aria-describedby="{}"'.format(description_ids)}
+            {'describedby_html': HTML('aria-describedby="{}"').format(description_ids)}
         )
 
         context.update(

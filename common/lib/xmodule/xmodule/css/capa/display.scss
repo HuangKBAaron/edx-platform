@@ -320,7 +320,8 @@ div.problem {
         @include status-icon($incorrect, $cross-icon);
       }
 
-      &.unsubmitted, &.unanswered {
+      &.unsubmitted,
+      &.unanswered {
         .status-icon {
           content: '';
         }

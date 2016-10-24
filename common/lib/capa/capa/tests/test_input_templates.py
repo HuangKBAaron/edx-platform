@@ -2,13 +2,16 @@
 Tests for the logic in input type mako templates.
 """
 
-from collections import OrderedDict
-import unittest
 import json
-from lxml import etree
-from mako import exceptions
+import unittest
+from collections import OrderedDict
+
 from capa.inputtypes import Status
 from capa.tests.helpers import capa_render_template
+from lxml import etree
+from mako import exceptions
+from openedx.core.djangolib.markup import HTML
+
 from xmodule.stringify import stringify_children
 
 
@@ -250,7 +253,7 @@ class ChoiceGroupTemplateTest(TemplateTestCase):
             'name_array_suffix': '1',
             'value': '3',
             'response_data': self.RESPONSE_DATA,
-            'describedby_html': self.DESCRIBEDBY,
+            'describedby_html': HTML(self.DESCRIBEDBY),
         }
 
     def test_problem_marked_correct(self):
@@ -495,7 +498,7 @@ class TextlineTemplateTest(TemplateTestCase):
             'preprocessor': None,
             'trailing_text': None,
             'response_data': self.RESPONSE_DATA,
-            'describedby_html': self.DESCRIBEDBY,
+            'describedby_html': HTML(self.DESCRIBEDBY),
         }
 
     def test_section_class(self):
@@ -621,7 +624,7 @@ class FormulaEquationInputTemplateTest(TemplateTestCase):
             'reported_status': 'REPORTED_STATUS',
             'trailing_text': None,
             'response_data': self.RESPONSE_DATA,
-            'describedby_html': self.DESCRIBEDBY,
+            'describedby_html': HTML(self.DESCRIBEDBY),
         }
 
     def test_no_size(self):
@@ -841,7 +844,7 @@ class OptionInputTemplateTest(TemplateTestCase):
             'value': 0,
             'default_option_text': 'Select an option',
             'response_data': self.RESPONSE_DATA,
-            'describedby_html': self.DESCRIBEDBY,
+            'describedby_html': HTML(self.DESCRIBEDBY),
         }
 
     def test_select_options(self):
@@ -1195,7 +1198,7 @@ class CodeinputTemplateTest(TemplateTestCase):
             'aria_label': 'python editor',
             'code_mirror_exit_message': 'Press ESC then TAB or click outside of the code editor to exit',
             'response_data': self.RESPONSE_DATA,
-            'describedby': self.DESCRIBEDBY,
+            'describedby': HTML(self.DESCRIBEDBY),
         }
 
     def test_label(self):
