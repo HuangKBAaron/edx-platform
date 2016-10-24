@@ -7,6 +7,7 @@ import time
 
 from dateutil.parser import parse
 import ddt
+from flaky import flaky
 from nose.plugins.attrib import attr
 from selenium.common.exceptions import TimeoutException
 from uuid import uuid4
@@ -1150,6 +1151,7 @@ class CreateTeamTest(TeamFormActions):
         # Verify that if one switches to "My Team" without reloading the page, the newly created team is shown.
         self.verify_my_team_count(1)
 
+    @flaky(max_runs=15, min_passes=15)
     def test_user_can_cancel_the_team_creation(self):
         """
         Scenario: The user should be able to cancel the creation of new team.
@@ -1163,6 +1165,11 @@ class CreateTeamTest(TeamFormActions):
         self.assertTrue(self.browse_teams_page.get_pagination_header_text().startswith('Showing 0 out of 0 total'))
 
         self.verify_and_navigate_to_create_team_page()
+
+        # adding a sleep to allow time for the click event handler to bind
+        # to the cancel button
+        time.sleep(0.5)
+
         self.team_management_page.cancel_team()
 
         self.assertTrue(self.browse_teams_page.is_browser_on_page())
