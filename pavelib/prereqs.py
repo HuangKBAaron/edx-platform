@@ -239,6 +239,17 @@ def package_in_frozen(package_name, frozen_output):
 
 @task
 @timed
+def install_coverage_prereqs():
+    """ Install python prereqs for measuring coverage. """
+    if no_prereq_install():
+        print NO_PREREQ_MESSAGE
+        return
+    for req in ['coverage==4.2', 'diff-cover==0.9.8']:
+        sh("pip install -q --disable-pip-version-check --exists-action w {req}".format(req=req))
+
+
+@task
+@timed
 def install_python_prereqs():
     """
     Installs Python prerequisites.
