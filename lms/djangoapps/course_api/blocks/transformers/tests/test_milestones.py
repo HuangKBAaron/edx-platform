@@ -162,8 +162,7 @@ class MilestonesTransformerTestCase(CourseStructureTestCase, MilestonesTestCaseM
         # clear the request cache to simulate a new request
         self.clear_caches()
 
-        # this call triggers reevaluation of prerequisites fulfilled by the parent of the
-        # block passed in, so we pass in a child of the gating block
+        # this call triggers reevaluation of prerequisites fulfilled by the gating block
         lms_gating_api.evaluate_prerequisite(
             self.course,
             self.user,

@@ -124,7 +124,7 @@ class GatingTestCase(ModuleStoreTestCase):
         RequestCache.clear_request_cache()
 
         # access to gating content (seq1) remains constant
-        self.assertTrue(bool(has_access(user, 'load', self.seq1, self.course.id)))
+        self.assertTrue(has_access(user, 'load', self.seq1, self.course.id))
 
         # access to gated content (seq2) is as expected
         self.assertEquals(bool(has_access(user, 'load', self.seq2, self.course.id)), expected_access)
